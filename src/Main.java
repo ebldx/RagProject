@@ -17,11 +17,14 @@ public class Main {
         Scanner fileReader = new Scanner(textFile);
         int i = 0;
         while (fileReader.hasNextLine()) {
-            textFileContents[i] = fileReader.nextLine();
+            String nextLine = fileReader.nextLine();
+            if (!(nextLine == null)) {
+                textFileContents[i] = nextLine;
+            }
             i++;
         }
         fileReader.close();
 
-        
+
     }
 }
