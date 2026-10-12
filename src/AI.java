@@ -6,6 +6,7 @@ import java.net.http.HttpResponse;
 
 public class AI {
     public static String languageModel (String modelName, String inputText) throws IOException, InterruptedException {
+        startModel(modelName);
         String json = String.format("""
                 {"model":%s,"prompt":%s, "stream":false}
                 """, modelName, inputText);
@@ -19,6 +20,7 @@ public class AI {
         return response.body().toString();
     }
     public static double[] embeddingModel (String modelName, String inputText) throws IOException, InterruptedException {
+        startModel(modelName);
         String json = String.format("""
                 {"model":%s,"prompt":%s}
                 """, modelName, inputText);
@@ -30,5 +32,12 @@ public class AI {
         HttpResponse response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
 
         return (double[]) response.body();
+    }
+
+    // Unreliable, more checks needed.
+    public static void startModel(String modelName) throws IOException {
+        Process serve = new ProcessBuilder("ollama serve").start();
+        Process pull = new ProcessBuilder("ollama pull", modelName).start();
+        Process run = new ProcessBuilder("ollama run", modelName).start();
     }
 }
