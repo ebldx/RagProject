@@ -20,7 +20,7 @@ public class Vector {
      * @return The similarity of the provided vectors
      */
     public double vectorSimilarity(Vector vectorA, Vector vectorB) {
-        return dotProduct(vectorA, vectorB) / (vectorA.getNorm() * vectorB.getNorm());
+        return dotProduct(vectorA, vectorB) / (vectorA.getMagnitude() * vectorB.getMagnitude());
     }
 
     /**
@@ -49,17 +49,17 @@ public class Vector {
     }
 
     /**
-     * Forgot the name D:
-     * @return the waddyacallit
+     * Calculates the magnitude of this vector
+     * @return the magnitude/norm of this vector
      */
-    public double getNorm() {
-        double norm = 0.0;
+    public double getMagnitude() {
+        double magnitude = 0.0;
         for (int i = 0; i < this.getDimension(); i++) {
-            norm += this.vValues[i] * this.vValues[i];
+            magnitude += this.vValues[i] * this.vValues[i];
         }
-        norm *= 0.5;
+        magnitude *= 0.5;
 
-        return norm;
+        return magnitude;
     }
 
     /**
