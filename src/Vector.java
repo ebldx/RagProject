@@ -19,7 +19,7 @@ public class Vector {
      * @param vectorB Another vector
      * @return The similarity of the provided vectors
      */
-    public double vectorSimilarity(Vector vectorA, Vector vectorB) {
+    public static double vectorSimilarity(Vector vectorA, Vector vectorB) {
         return dotProduct(vectorA, vectorB) / (vectorA.getMagnitude() * vectorB.getMagnitude());
     }
 
@@ -29,7 +29,7 @@ public class Vector {
      * @param vectorB Another vector
      * @return The dot product of the provided vectors
      */
-    public double dotProduct (Vector vectorA, Vector vectorB) {
+    public static double dotProduct (Vector vectorA, Vector vectorB) {
         if (vectorA == null) {
             throw new IllegalArgumentException("Vector vectorA cannot be null.");
         }

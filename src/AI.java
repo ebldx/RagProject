@@ -5,7 +5,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class AI {
-    public String languageModel (String modelName, String inputText) throws IOException, InterruptedException {
+    public static String languageModel (String modelName, String inputText) throws IOException, InterruptedException {
         String json = String.format("""
                 {"model":%s,"prompt":%s, "stream":false}
                 """, modelName, inputText);
@@ -18,7 +18,7 @@ public class AI {
 
         return response.body().toString();
     }
-    public double[] embeddingModel (String modelName, String inputText) throws IOException, InterruptedException {
+    public static double[] embeddingModel (String modelName, String inputText) throws IOException, InterruptedException {
         String json = String.format("""
                 {"model":%s,"prompt":%s}
                 """, modelName, inputText);
