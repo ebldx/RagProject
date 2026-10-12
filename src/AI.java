@@ -6,8 +6,6 @@ import java.net.http.HttpResponse;
 
 public class AI {
     public String languageModel (String modelName, String inputText) throws IOException, InterruptedException {
-
-
         String json = String.format("""
                 {"model":%s,"prompt":%s, "stream":false}
                 """, modelName, inputText);
@@ -19,5 +17,18 @@ public class AI {
         HttpResponse response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
 
         return response.body().toString();
+    }
+    public double[] embeddingModel (String modelName, String inputText) throws IOException, InterruptedException {
+        String json = String.format("""
+                {"model":%s,"prompt":%s}
+                """, modelName, inputText);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:11434/api/generate"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+        HttpResponse response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+
+        return (double[]) response.body();
     }
 }
