@@ -5,11 +5,11 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class AI {
-    public static String languageModel (String modelName, String inputText) throws IOException, InterruptedException {
+    public static String languageModel (String modelName, String systemPrompt, String userPrompt) throws IOException, InterruptedException {
         startModel(modelName);
         String json = String.format("""
-                {"model":%s,"prompt":%s, "stream":false}
-                """, modelName, inputText);
+                {"model":%s, "":%s, "prompt":%s, "stream":false}
+                """, modelName, systemPrompt, userPrompt);
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create("http://localhost:11434/api/generate"))
             .header("Content-Type", "application/json")
