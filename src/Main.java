@@ -55,5 +55,26 @@ public class Main {
         }
 
         Arrays.sort(similarities);
+
+
+        // Add calculation to determine how much info from vector similarity to provide.
+        String systemPrompt = String.format("""
+                    You are a helpful assistant. Answer the user's question using the rules reference information provided below.
+                
+                    Rules:
+                    - Treat the reference information as your primary source.
+                    - Do not invent facts or fill gaps with unsupported assumptions.
+                    - If the reference information is not enough to provide an answer, say so clearly.
+                    - If the information provided is conflicting or unclear, point that out.
+                    - Clearly distinguish general information from the reference information when providing an answer.
+                    - Keep the answer focused and concise.
+                
+                    Reference information:
+                    %s
+                    %s
+                    %s
+                """, similarities[0], similarities[1], similarities[2]);
+
+        System.out.println(AI.languageModel(langModelName, systemPrompt, userPrompt));
     }
 }
