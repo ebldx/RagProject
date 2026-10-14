@@ -48,12 +48,22 @@ public class Main {
         }
         Vector userPromptVector = new Vector(AI.embeddingModel(embedModelName, userPrompt));
 
-        double[] similarities = new double[vectorData.length];
-        for (int i = 0; i < vectorData.length; i++) {
-            similarities[i] = Vector.vectorSimilarity(userPromptVector, vectorData[i]);
+        ArrayList<Double> similarities = new ArrayList<Double>();
+        for (Vector thisVectorData : vectorData) {
+            similarities.add(Vector.vectorSimilarity(userPromptVector, thisVectorData));
         }
 
-        Arrays.sort(similarities);
+        // Use maps instead?
+        for (int i = 0; i < similarities.size(); i++) {
+            double similarity = similarities.get(i);
+            String text = textFileContents.get(i);
+            if (similarity <= similarities.getFirst()) {
+                similarities.remove(i);
+                textFileContents.remove(i);
+                similarities.addFirst(similarity);
+                textFileContents.addFirst(text);
+            }
+        }
 
 
         // Add calculation to determine how much info from vector similarity to provide.
@@ -72,7 +82,7 @@ public class Main {
                     %s
                     %s
                     %s
-                """, similarities[0], similarities[1], similarities[2]);
+                """, textFileContents.get(0), textFileContents.get(1), textFileContents.get(2));
 
         System.out.println(AI.languageModel(langModelName, systemPrompt, userPrompt));
     }
