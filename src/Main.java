@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
@@ -32,20 +33,18 @@ public class Main {
         } while (userPrompt == "");
         scanner.close();
 
-        String[] textFileContents = new String[200]; // FIND TEXTFILE SIZE!
+        ArrayList<String> textFileContents = new ArrayList<String>();
         File textFile = new File(fileName);
         Scanner fileReader = new Scanner(textFile);
-        int lineNr = 0;
         while (fileReader.hasNextLine()) {
             String nextLine = fileReader.nextLine();
-            textFileContents[lineNr] = nextLine;
-            lineNr++;
+            textFileContents.add(nextLine);
         }
         fileReader.close();
 
-        Vector[] vectorData = new Vector[textFileContents.length];
-        for (int i = 0; i < textFileContents.length; i++) {
-            vectorData[i] = new Vector(AI.embeddingModel(embedModelName, textFileContents[i]));
+        Vector[] vectorData = new Vector[textFileContents.size()];
+        for (int i = 0; i < textFileContents.size(); i++) {
+            vectorData[i] = new Vector(AI.embeddingModel(embedModelName, textFileContents.get(i)));
         }
         Vector userPromptVector = new Vector(AI.embeddingModel(embedModelName, userPrompt));
 
