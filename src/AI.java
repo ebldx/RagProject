@@ -8,7 +8,7 @@ public class AI {
     public static String languageModel (String modelName, String systemPrompt, String userPrompt) throws IOException, InterruptedException {
         startModel(modelName);
         String json = String.format("""
-                {"model":%s, "":%s, "prompt":%s, "stream":false}
+                {"model":%s, "system":"%s", "prompt":"%s", "stream":false}
                 """, modelName, systemPrompt, userPrompt);
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create("http://localhost:11434/api/generate"))
@@ -22,7 +22,7 @@ public class AI {
     public static double[] embeddingModel (String modelName, String inputText) throws IOException, InterruptedException {
         startModel(modelName);
         String json = String.format("""
-                {"model":%s,"prompt":%s}
+                {"model":"%s","input":"%s"}
                 """, modelName, inputText);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:11434/api/generate"))
