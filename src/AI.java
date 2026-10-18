@@ -25,7 +25,7 @@ public class AI {
                 {"model":"%s","input":"%s"}
                 """, modelName, inputText);
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:11434/api/generate"))
+                .uri(URI.create("http://localhost:11434/api/embed"))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
