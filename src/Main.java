@@ -1,6 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
 import java.util.Scanner;
 import java.io.File;
 
@@ -10,25 +8,25 @@ public class Main {
 
         String fileName = "";
         do {
-            System.out.println("Enter filename of text file: ");
+            System.out.print("Enter filename of text file: ");
             fileName = scanner.nextLine();
         } while (!(new File(fileName).exists()));
 
         String embedModelName = "";
         do {
-            System.out.println("Enter name of embedding model: ");
+            System.out.print("Enter name of embedding model: ");
             embedModelName = scanner.nextLine();
         } while (embedModelName == "");
 
         String langModelName = "";
         do {
-            System.out.println("Enter name of language model: ");
+            System.out.print("Enter name of language model: ");
             langModelName = scanner.nextLine();
         } while (langModelName == "");
 
         String userPrompt = "";
         do {
-            System.out.println("Enter user prompt: ");
+            System.out.print("Enter user prompt: ");
             userPrompt = scanner.nextLine();
         } while (userPrompt == "");
         scanner.close();
