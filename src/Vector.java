@@ -1,3 +1,5 @@
+import static java.lang.Math.sqrt;
+
 public class Vector {
     private final double[] vValues;
 
@@ -57,9 +59,7 @@ public class Vector {
         for (int i = 0; i < this.getDimension(); i++) {
             magnitude += this.vValues[i] * this.vValues[i];
         }
-        magnitude *= 0.5;
-
-        return magnitude;
+        return sqrt(magnitude);
     }
 
     /**
