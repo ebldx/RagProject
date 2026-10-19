@@ -3,8 +3,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
+import org.json.JSONObject;
 
 public class AI {
     public static String languageModel (String modelName, String systemPrompt, String userPrompt) throws IOException, InterruptedException {
@@ -17,11 +16,11 @@ public class AI {
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create("http://localhost:11434/api/generate"))
             .header("Content-Type", "application/json")
-            .POST(HttpRequest.BodyPublishers.ofString(json))
+            .POST(HttpRequest.BodyPublishers.ofString(JSONObject.valueToString(json)))
             .build();
         HttpResponse response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
 
-        JSONObject responseBody = (JSONObject) JSONValue.parse(response.body());
+        JSONObject responseBody = new JSONObject(response.body());
         return responseBody.get("response").toString();
     }
     public static double[] embeddingModel (String modelName, String inputText) throws IOException, InterruptedException {
@@ -32,11 +31,11 @@ public class AI {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:11434/api/embed"))
                 .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .POST(HttpRequest.BodyPublishers.ofString(JSONObject.valueToString(json)))
                 .build();
         HttpResponse response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
 
-        JSONObject responseBody = (JSONObject) JSONValue.parse(response.body());
+        JSONObject responseBody = new JSONObject(response.body());
         return (double[]) responseBody.get("embeddings");
     }
 
