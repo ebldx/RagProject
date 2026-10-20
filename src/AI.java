@@ -7,7 +7,17 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class AI {
-    public static String languageModel (String modelName, String systemPrompt, String userPrompt) throws IOException, InterruptedException {
+    private final HttpClient client;
+    private final URI baseURI;
+    public AI() {
+        this(HttpClient.newHttpClient(), URI.create("http://localhost:11434/"));
+    }
+    public AI(HttpClient client, URI baseURI) {
+        this.client = client;
+        this.baseURI = baseURI;
+    }
+
+    public String languageModel (String modelName, String systemPrompt, String userPrompt) throws IOException, InterruptedException {
         //startModel(modelName);
         JSONObject json = new JSONObject();
         json.put("model", modelName);
@@ -15,26 +25,26 @@ public class AI {
         json.put("prompt", userPrompt);
         json.put("stream", false);
         HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create("http://localhost:11434/api/generate"))
+            .uri(baseURI.resolve("api/generate"))
             .header("Content-Type", "application/json")
             .POST(HttpRequest.BodyPublishers.ofString(json.toString()))
             .build();
-        HttpResponse response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         JSONObject responseBody = new JSONObject(response.body().toString());
         return responseBody.get("response").toString();
     }
-    public static double[] embeddingModel (String modelName, String inputText) throws IOException, InterruptedException {
+    public double[] embeddingModel (String modelName, String inputText) throws IOException, InterruptedException {
         //startModel(modelName);
         JSONObject json = new JSONObject();
         json.put("model", modelName);
         json.put("input", inputText);
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:11434/api/embed"))
+                .uri(baseURI.resolve("api/embed"))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json.toString()))
                 .build();
-        HttpResponse response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         JSONObject responseBody = new JSONObject(response.body().toString());
         JSONArray embeddings = (JSONArray) responseBody.getJSONArray("embeddings").get(0);
