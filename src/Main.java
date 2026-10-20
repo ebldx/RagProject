@@ -30,6 +30,7 @@ public class Main {
             userPrompt = scanner.nextLine();
         } while (userPrompt == "");
         scanner.close();
+        System.out.println("");
 
         ArrayList<String> textFileContents = new ArrayList<String>();
         File textFile = new File(fileName);
@@ -42,6 +43,7 @@ public class Main {
 
         Vector[] vectorData = new Vector[textFileContents.size()];
         for (int i = 0; i < textFileContents.size(); i++) {
+            System.out.printf("Embedding line %s of %s\n", i+1, textFileContents.size());
             vectorData[i] = new Vector(AI.embeddingModel(embedModelName, textFileContents.get(i)));
         }
         Vector userPromptVector = new Vector(AI.embeddingModel(embedModelName, userPrompt));
@@ -52,6 +54,7 @@ public class Main {
         }
 
         // Use maps instead?
+        System.out.println("\nCalculating similarity...");
         for (int i = 0; i < similarities.size(); i++) {
             double similarity = similarities.get(i);
             String text = textFileContents.get(i);
@@ -65,23 +68,9 @@ public class Main {
 
 
         // Add calculation to determine how much info from vector similarity to provide.
-        String systemPrompt = String.format("""
-                    You are a helpful assistant. Answer the user's question using the rules reference information provided below.
-                
-                    Rules:
-                    - Treat the reference information as your primary source.
-                    - Do not invent facts or fill gaps with unsupported assumptions.
-                    - If the reference information is not enough to provide an answer, say so clearly.
-                    - If the information provided is conflicting or unclear, point that out.
-                    - Clearly distinguish general information from the reference information when providing an answer.
-                    - Keep the answer focused and concise.
-                
-                    Reference information:
-                    %s
-                    %s
-                    %s
-                """, textFileContents.get(0), textFileContents.get(1), textFileContents.get(2));
-
+        String systemPrompt = String.format("You are a helpful assistant. Answer the users question using the rules reference information provided below.\nRules:\n- Treat the reference information as your primary source.\n - If the reference information is not enough to provide an answer, say so clearly.\n - If the information provided is conflicting or unclear, point that out.\n - Clearly distinguish general information from the reference information when providing an answer.\nReference information:\n%s\n%s\n%s", textFileContents.get(0), textFileContents.get(1), textFileContents.get(2));
+        System.out.println("\n\n\n\nReference info:\n\t" + textFileContents.get(0) + "\n\t" +  textFileContents.get(1) + "\n\t" + textFileContents.get(2) + "\n\nUser prompt:\n\t" + userPrompt);
+        System.out.println("\nRunning language model...");
         System.out.println(AI.languageModel(langModelName, systemPrompt, userPrompt));
     }
 }
