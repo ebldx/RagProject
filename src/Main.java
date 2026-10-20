@@ -55,7 +55,7 @@ public class Main {
         for (int i = 0; i < similarities.size(); i++) {
             double similarity = similarities.get(i);
             String text = textFileContents.get(i);
-            if (similarity <= similarities.getFirst()) {
+            if (similarity >= similarities.getFirst()) {
                 similarities.remove(i);
                 textFileContents.remove(i);
                 similarities.addFirst(similarity);
