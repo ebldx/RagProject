@@ -12,7 +12,7 @@ class VectorTest {
     private final double[] vValueG = {0.0, 0.0, 0.0};
 
     @Test
-    public void dotProductTest() {
+    void dotProductTest() {
         Vector vectorA = new Vector(vValueA);
         Vector vectorB = new Vector(vValueB);
         Vector vectorC = new Vector(vValueC);
@@ -29,7 +29,7 @@ class VectorTest {
     }
 
     @Test
-    public void getMagnitudeTest() {
+    void getMagnitudeTest() {
         Vector vectorA = new Vector(vValueA);
         Vector vectorD = new Vector(vValueD);
         Vector vectorE = new Vector(vValueE);
@@ -42,7 +42,7 @@ class VectorTest {
     }
 
     @Test
-    public void vectorSimilarityTest() {
+    void vectorSimilarityTest() {
         Vector vectorA = new Vector(vValueA);
         Vector vectorB = new Vector(vValueB);
         Vector vectorC = new Vector(vValueC);
