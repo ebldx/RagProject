@@ -1,10 +1,12 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.io.File;
 
 public class Main {
     public static void main(String[] args) throws Exception {
         Scanner scanner = new Scanner(System.in);
+        AI myAI = new AI();
 
         String fileName = "";
         String embedModelName = "";
@@ -20,12 +22,12 @@ public class Main {
                 do {
                     System.out.print("Enter name of embedding model: ");
                     embedModelName = scanner.nextLine();
-                } while (embedModelName == "");
+                } while (!myAI.checkModel(embedModelName, AI.SupportedModelTypes.EMBEDDING)[1]);
 
                 do {
                     System.out.print("Enter name of language model: ");
                     langModelName = scanner.nextLine();
-                } while (langModelName == "");
+                } while (!myAI.checkModel(langModelName, AI.SupportedModelTypes.LANGUAGE)[1]);
 
                 do {
                     System.out.print("Enter user prompt: ");
@@ -48,8 +50,6 @@ public class Main {
             textFileContents.add(nextLine);
         }
         fileReader.close();
-
-        AI myAI = new AI();
 
         Vector[] vectorData = new Vector[textFileContents.size()];
         for (int i = 0; i < textFileContents.size(); i++) {
