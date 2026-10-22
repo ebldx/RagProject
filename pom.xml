@@ -7,6 +7,8 @@
     <artifactId>RagProject</artifactId>
     <name>RagProject</name>
     <build>
+        <sourceDirectory>/src/RagProject/</sourceDirectory>
+        <testSourceDirectory>/src/test/</testSourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
