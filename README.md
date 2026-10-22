@@ -2,7 +2,7 @@
 Basic Retrieval-augmented Generation using Ollama.
 
 ### Project Status
-The project is still under development, source code is under `src/`, tests are under `test/`.
+The project is still under development, source code is under `src/RagProject/`, tests are under `src/test/`.
 
 ### Installation
 Yet to be documented.
