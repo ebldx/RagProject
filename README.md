@@ -2,7 +2,10 @@
 Basic Retrieval-augmented Generation using Ollama.
 
 ### Project Status
-The project is still under development, source code is under `src/`. Run, build and test instructions are yet to be documented.
+The project is still under development, source code is under `src/`, tests are under `test/`.
+
+### Installation
+Yet to be documented.
 
 ### Planned improvements
  - Improve error checking and handling.
