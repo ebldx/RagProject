@@ -25,8 +25,10 @@ public class AI {
         this.baseURI = baseURI;
     }
 
-    public String languageModel (String modelName, String systemPrompt, String userPrompt) throws IOException, InterruptedException {
-        prepModel(modelName, SupportedModelTypes.LANGUAGE);
+    public String languageModel (String modelName, String systemPrompt, String userPrompt, boolean prep) throws IOException, InterruptedException {
+        if (prep) {
+            prepModel(modelName, SupportedModelTypes.LANGUAGE);
+        }
         JSONObject json = new JSONObject();
         json.put("model", modelName);
         json.put("system", systemPrompt);
@@ -47,8 +49,10 @@ public class AI {
             throw new RuntimeException(errorResponse);
         }
     }
-    public double[] embeddingModel (String modelName, String inputText) throws IOException, InterruptedException, RuntimeException {
-        prepModel(modelName, SupportedModelTypes.EMBEDDING);
+    public double[] embeddingModel (String modelName, String inputText, boolean prep) throws IOException, InterruptedException, RuntimeException {
+        if (prep) {
+            prepModel(modelName, SupportedModelTypes.EMBEDDING);
+        }
         JSONObject json = new JSONObject();
         json.put("model", modelName);
         json.put("input", inputText);

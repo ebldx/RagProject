@@ -50,7 +50,7 @@ public class AITest {
     @Test
     void embedModelTest() throws IOException, InterruptedException {
         responseBody.set("{\"embeddings\":[[3.0, 4.0, 0.0]]}");
-        double[] output = testAi.embeddingModel("embedding-model", "test text. :)");
+        double[] output = testAi.embeddingModel("embedding-model", "test text. :)", false);
 
         assertArrayEquals(new double[] {3.0, 4.0, 0.0}, output);
         assertEquals("/api/embed", requestPath.get());
@@ -63,14 +63,14 @@ public class AITest {
     @Test
     void embedModelErrorTest() {
         responseBody.set("{\"error\":\"error test. :)\"}");
-        RuntimeException testException = assertThrows(RuntimeException.class, () -> testAi.embeddingModel("embedding-model", "test text. :)"));
+        RuntimeException testException = assertThrows(RuntimeException.class, () -> testAi.embeddingModel("embedding-model", "test text. :)", false));
         assertEquals("error test. :)", testException.getMessage());
     }
 
     @Test
     void langModelTest() throws IOException, InterruptedException {
         responseBody.set("{\"response\":\"response test. :)\"}");
-        assertEquals("response test. :)", testAi.languageModel("language-model", "system test text. :)","test text. :)"));
+        assertEquals("response test. :)", testAi.languageModel("language-model", "system test text. :)","test text. :)", false));
 
         assertEquals("/api/generate", requestPath.get());
 
@@ -84,7 +84,7 @@ public class AITest {
     @Test
     void langModelErrorTest() {
         responseBody.set("{\"error\":\"error test. :)\"}");
-        RuntimeException testException = assertThrows(RuntimeException.class, () -> testAi.languageModel("language-model", "system test text. :)", "test text. :)"));
+        RuntimeException testException = assertThrows(RuntimeException.class, () -> testAi.languageModel("language-model", "system test text. :)", "test text. :)", false));
         assertEquals("error test. :)", testException.getMessage());
     }
 }
