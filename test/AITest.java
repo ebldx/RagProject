@@ -13,6 +13,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -52,7 +53,7 @@ public class AITest {
         responseBody.set("{\"embeddings\":[[3.0, 4.0, 0.0]]}");
         double[] output = testAi.embeddingModel("embedding-model", "test text. :)", false);
 
-        assertArrayEquals(new double[] {3.0, 4.0, 0.0}, output);
+        assertArrayEquals(new double[]{3.0, 4.0, 0.0}, output);
         assertEquals("/api/embed", requestPath.get());
 
         JSONObject requestJSON = new JSONObject(requestBody.get());
@@ -70,7 +71,7 @@ public class AITest {
     @Test
     void langModelTest() throws IOException, InterruptedException {
         responseBody.set("{\"response\":\"response test. :)\"}");
-        assertEquals("response test. :)", testAi.languageModel("language-model", "system test text. :)","test text. :)", false));
+        assertEquals("response test. :)", testAi.languageModel("language-model", "system test text. :)", "test text. :)", false));
 
         assertEquals("/api/generate", requestPath.get());
 
@@ -86,5 +87,23 @@ public class AITest {
         responseBody.set("{\"error\":\"error test. :)\"}");
         RuntimeException testException = assertThrows(RuntimeException.class, () -> testAi.languageModel("language-model", "system test text. :)", "test text. :)", false));
         assertEquals("error test. :)", testException.getMessage());
+    }
+
+    @Test
+    void checkModelTest() throws IOException, InterruptedException {
+        responseBody.set("{\"capabilities\":[\"embedding\"]}");
+        assertFalse(testAi.checkModel("embedding-model", AI.SupportedModelTypes.LANGUAGE)[1]);
+        assertTrue(testAi.checkModel("embedding-model", AI.SupportedModelTypes.EMBEDDING)[1]);
+
+        responseBody.set("{\"capabilities\":[\"completion\"]}");
+        assertTrue(testAi.checkModel("language-model", AI.SupportedModelTypes.LANGUAGE)[1]);
+        assertFalse(testAi.checkModel("language-model", AI.SupportedModelTypes.EMBEDDING)[1]);
+    }
+
+    @Test
+    void checkModelErrorTest() throws IOException, InterruptedException {
+        responseBody.set("{\"error\":\"test text. :)\"}");
+        assertFalse(testAi.checkModel("language-model", AI.SupportedModelTypes.LANGUAGE)[0]);
+        assertFalse(testAi.checkModel("embedding-model", AI.SupportedModelTypes.EMBEDDING)[0]);
     }
 }
