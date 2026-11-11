@@ -22,6 +22,9 @@ public class Vector {
      * @return The similarity of the provided vectors
      */
     public static double vectorSimilarity(Vector vectorA, Vector vectorB) {
+        if ((vectorA.getMagnitude() == 0) || (vectorB.getMagnitude() == 0) {
+            throw new IllegalArgumentException("Vector magnitude cannot be 0.");
+        }
         return dotProduct(vectorA, vectorB) / (vectorA.getMagnitude() * vectorB.getMagnitude());
     }
 
