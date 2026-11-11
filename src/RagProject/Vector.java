@@ -62,20 +62,6 @@ public class Vector {
         return sqrt(magnitude);
     }
 
-    /**
-     * Creates a vector with randomized values within the selected dimension.
-     * @param dimension The dimension of the vector
-     * @return A vector with random vector values within the selected dimension
-     */
-    public Vector randomWithDimension(int dimension) {
-        double[] values = new double[dimension];
-        for (int i = 0; i < dimension; i++) {
-            values[i] = Math.random();
-        }
-
-        return new Vector(values);
-    }
-
     public int getDimension() {
         return this.vValues.length;
     }
