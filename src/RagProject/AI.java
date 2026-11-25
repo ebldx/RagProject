@@ -80,9 +80,6 @@ public class AI {
     }
 
     public void prepModel(String modelName, SupportedModelTypes modelType) throws IOException, InterruptedException {
-        Process serve = new ProcessBuilder("ollama", "serve").start();
-        serve.waitFor();
-
         // Requests list of running models
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(baseURI.resolve("api/ps"))
