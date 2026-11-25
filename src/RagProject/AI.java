@@ -20,13 +20,14 @@ public class AI {
     private final SupportedModelTypes modelType;
     private final String modelName;
     private boolean modelRunning;
-    public AI(String modelName, SupportedModelTypes modelType) {
-        this(HttpClient.newHttpClient(), URI.create("http://localhost:11434/"));
+    public AI(String modelName, SupportedModelTypes modelType) throws IOException, InterruptedException {
+        this.client = HttpClient.newHttpClient();
+        this.baseURI = URI.create("http://localhost:11434/");
         this.modelType = modelType;
         this.modelName = modelName;
         this.prepModel();
     }
-    public AI(HttpClient client, URI baseURI, String modelName, SupportedModelTypes modelType) {
+    public AI(HttpClient client, URI baseURI, String modelName, SupportedModelTypes modelType) throws IOException, InterruptedException {
         this.client = client;
         this.baseURI = baseURI;
         this.modelType = modelType;
@@ -57,7 +58,7 @@ public class AI {
         }
 
         if (!modelRunning) {
-            boolean[] modelCheck = this.checkModel(this.modelName, this.modelType);
+            boolean[] modelCheck = this.checkModel(this.modelName, this.modelType, this.client, this.baseURI);
             boolean modelIsPulled = modelCheck[0];
             boolean modelIsType = modelCheck[1];
             if (!modelIsPulled) {
@@ -88,7 +89,7 @@ public class AI {
         }
     }
 
-    public static boolean[] checkModel(String modelName, SupportedModelTypes modelType) throws IOException, InterruptedException {
+    public static boolean[] checkModel(String modelName, SupportedModelTypes modelType, HttpClient client, URI baseURI) throws IOException, InterruptedException {
         JSONObject json = new JSONObject();
         json.put("model", modelName);
         HttpRequest request = HttpRequest.newBuilder()
@@ -117,6 +118,13 @@ public class AI {
 
 
 class VectorAI extends AI {
+    public VectorAI(String modelName, SupportedModelTypes modelType) throws IOException, InterruptedException {
+        super(modelName, modelType);
+    }
+    public VectorAI(HttpClient client, URI baseURI, String modelName, SupportedModelTypes modelType) throws IOException, InterruptedException {
+        super(client, baseURI, modelName, modelType);
+    }
+
     public double[] invokeModel(String inputText) throws IOException, InterruptedException, RuntimeException {
         if (this.modelType != SupportedModelTypes.EMBEDDING) {
             throw new RuntimeException("Invalid model type for VectorAI class.");
@@ -125,11 +133,11 @@ class VectorAI extends AI {
         json.put("model", this.modelName);
         json.put("input", inputText);
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(baseURI.resolve("api/embed"))
+                .uri(this.baseURI.resolve("api/embed"))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json.toString()))
                 .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = this.client.send(request, HttpResponse.BodyHandlers.ofString());
 
         JSONObject responseBody = new JSONObject(response.body());
         JSONArray embeddings;
@@ -150,6 +158,13 @@ class VectorAI extends AI {
 
 
 class LanguageAI extends AI {
+    public LanguageAI(String modelName, SupportedModelTypes modelType) throws IOException, InterruptedException {
+        super(modelName, modelType);
+    }
+    public LanguageAI(HttpClient client, URI baseURI, String modelName, SupportedModelTypes modelType) throws IOException, InterruptedException {
+        super(client, baseURI, modelName, modelType);
+    }
+
     public String invokeModel(String systemPrompt, String userPrompt) throws IOException, InterruptedException {
         if (this.modelType != SupportedModelTypes.LANGUAGE) {
             throw new RuntimeException("Invalid model type for LanguageAI class.");
@@ -160,11 +175,11 @@ class LanguageAI extends AI {
         json.put("prompt", userPrompt);
         json.put("stream", false);
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(baseURI.resolve("api/generate"))
+                .uri(this.baseURI.resolve("api/generate"))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json.toString()))
                 .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = this.client.send(request, HttpResponse.BodyHandlers.ofString());
 
         JSONObject responseBody = new JSONObject(response.body());
         try {

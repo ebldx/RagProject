@@ -1,7 +1,8 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
 import java.io.File;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -21,12 +22,12 @@ public class Main {
                 do {
                     System.out.print("Enter name of embedding model: ");
                     embedModelName = scanner.nextLine();
-                } while (!checkModel(embedModelName, AI.SupportedModelTypes.EMBEDDING)[1]);
+                } while (!AI.checkModel(embedModelName, AI.SupportedModelTypes.EMBEDDING, HttpClient.newHttpClient(), URI.create("http://localhost:11434/"))[1]);
 
                 do {
                     System.out.print("Enter name of language model: ");
                     langModelName = scanner.nextLine();
-                } while (!checkModel(langModelName, AI.SupportedModelTypes.LANGUAGE)[1]);
+                } while (!AI.checkModel(langModelName, AI.SupportedModelTypes.LANGUAGE, HttpClient.newHttpClient(), URI.create("http://localhost:11434/"))[1]);
 
                 do {
                     System.out.print("Enter user prompt: ");
@@ -41,8 +42,8 @@ public class Main {
             userPrompt = "Why do cats have whiskers?";
         }
 
-        LanguageAI LLM = new LanguageAI(HttpClient.newHttpClient(), URI.create("http://192.168.1.253:11434/"), langModelName, AI.SupportedModelTypes.LANGUAGE);
-        VectorAI VSM = new VectorAI(HttpClient.newHttpClient(), URI.create("http://192.168.1.253:11434/"), embedModelName, AI.SupportedModelTypes.EMBEDDING);
+        LanguageAI LLM = new LanguageAI(langModelName, AI.SupportedModelTypes.LANGUAGE);
+        VectorAI VSM = new VectorAI(embedModelName, AI.SupportedModelTypes.EMBEDDING);
 
         ArrayList<String> textFileContents = new ArrayList<String>();
         File textFile = new File(fileName);
