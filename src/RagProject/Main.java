@@ -6,7 +6,6 @@ import java.io.File;
 public class Main {
     public static void main(String[] args) throws Exception {
         Scanner scanner = new Scanner(System.in);
-        AI myAI = new AI();
 
         String fileName = "";
         String embedModelName = "";
@@ -22,12 +21,12 @@ public class Main {
                 do {
                     System.out.print("Enter name of embedding model: ");
                     embedModelName = scanner.nextLine();
-                } while (!myAI.checkModel(embedModelName, AI.SupportedModelTypes.EMBEDDING)[1]);
+                } while (!checkModel(embedModelName, AI.SupportedModelTypes.EMBEDDING)[1]);
 
                 do {
                     System.out.print("Enter name of language model: ");
                     langModelName = scanner.nextLine();
-                } while (!myAI.checkModel(langModelName, AI.SupportedModelTypes.LANGUAGE)[1]);
+                } while (!checkModel(langModelName, AI.SupportedModelTypes.LANGUAGE)[1]);
 
                 do {
                     System.out.print("Enter user prompt: ");
@@ -42,6 +41,9 @@ public class Main {
             userPrompt = "Why do cats have whiskers?";
         }
 
+        LanguageAI LLM = new LanguageAI(HttpClient.newHttpClient(), URI.create("http://192.168.1.253:11434/"), langModelName, AI.SupportedModelTypes.LANGUAGE);
+        VectorAI VSM = new VectorAI(HttpClient.newHttpClient(), URI.create("http://192.168.1.253:11434/"), embedModelName, AI.SupportedModelTypes.EMBEDDING);
+
         ArrayList<String> textFileContents = new ArrayList<String>();
         File textFile = new File(fileName);
         Scanner fileReader = new Scanner(textFile);
@@ -54,9 +56,9 @@ public class Main {
         Vector[] vectorData = new Vector[textFileContents.size()];
         for (int i = 0; i < textFileContents.size(); i++) {
             System.out.printf("Embedding line %s of %s\n", i+1, textFileContents.size());
-            vectorData[i] = new Vector(myAI.embeddingModel(embedModelName, textFileContents.get(i), true));
+            vectorData[i] = new Vector(VSM.invokeModel(textFileContents.get(i)));
         }
-        Vector userPromptVector = new Vector(myAI.embeddingModel(embedModelName, userPrompt, true));
+        Vector userPromptVector = new Vector(VSM.invokeModel(userPrompt));
 
         ArrayList<Double> similarities = new ArrayList<Double>();
         for (Vector thisVectorData : vectorData) {
@@ -81,6 +83,6 @@ public class Main {
         String systemPrompt = String.format("You are a helpful assistant. Answer the users question using the rules reference information provided below.\nRules:\n- Treat the reference information as your primary source.\n - If the reference information is not enough to provide an answer, say so clearly.\n - If the information provided is conflicting or unclear, point that out.\n - Clearly distinguish general information from the reference information when providing an answer.\nReference information:\n%s\n%s\n%s", textFileContents.get(0), textFileContents.get(1), textFileContents.get(2));
         System.out.println("\n\n\n\nReference info:\n\t" + textFileContents.get(0) + "\n\t" +  textFileContents.get(1) + "\n\t" + textFileContents.get(2) + "\n\nUser prompt:\n\t" + userPrompt);
         System.out.println("\nRunning language model...");
-        System.out.println(myAI.languageModel(langModelName, systemPrompt, userPrompt, true));
+        System.out.println(LLM.invokeModel(systemPrompt, userPrompt));
     }
 }
