@@ -58,7 +58,7 @@ public class AI {
         }
 
         if (!modelRunning) {
-            boolean[] modelCheck = this.checkModel(this.modelName, this.modelType, this.client, this.baseURI);
+            boolean[] modelCheck = checkModel(this.modelName, this.modelType, this.client, this.baseURI);
             boolean modelIsPulled = modelCheck[0];
             boolean modelIsType = modelCheck[1];
             if (!modelIsPulled) {
