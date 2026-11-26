@@ -43,7 +43,7 @@ public class Main {
         }
 
         LanguageAI LLM = new LanguageAI(langModelName, AI.SupportedModelTypes.LANGUAGE);
-        VectorAI VSM = new VectorAI(embedModelName, AI.SupportedModelTypes.EMBEDDING);
+        EmbeddingAI VSM = new EmbeddingAI(embedModelName, AI.SupportedModelTypes.EMBEDDING);
 
         ArrayList<String> textFileContents = new ArrayList<String>();
         File textFile = new File(fileName);
