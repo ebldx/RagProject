@@ -14,7 +14,7 @@ import static java.util.stream.StreamSupport.stream;
 
 
 public class AI {
-    public enum SupportedModelTypes {LANGUAGE, EMBEDDING}
+    public enum SupportedModelTypes {LANGUAGE, EMBEDDING, NEITHER}
     private final HttpClient client;
     private final URI baseURI;
     private final SupportedModelTypes modelType;
@@ -110,6 +110,8 @@ public class AI {
                 modelIsType = capabilities.toList().contains("completion");
             } else if (modelType == SupportedModelTypes.EMBEDDING) {
                 modelIsType = capabilities.toList().contains("embedding");
+            } else if (modelType == SupportedModelTypes.NEITHER) {
+                modelIsType = !(capabilities.toList().contains("completion") && capabilities.toList().contains("embedding"));
             }
         }
         return new boolean[] {modelIsPulled, modelIsType};
