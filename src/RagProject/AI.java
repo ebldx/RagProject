@@ -114,6 +114,11 @@ public class AI {
         }
         return new boolean[] {modelIsPulled, modelIsType};
     }
+
+    public String getModelName() {return this.modelName;}
+    public SupportedModelTypes getModelType() {return this.modelType;}
+    public HttpClient getClient() {return this.client;}
+    public URI getBaseURI() {return this.baseURI;}
 }
 
 
