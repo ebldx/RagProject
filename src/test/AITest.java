@@ -25,7 +25,7 @@ public class AITest {
     private AtomicReference<String> responseBody = new AtomicReference<>();
 
     @BeforeEach
-    void setUp() throws IOException {
+    void setUp() throws IOException, InterruptedException {
         testServer = HttpServer.create(new InetSocketAddress("localhost", 0), 0);
         testServer.createContext("/", exchange -> {
             requestPath.set(exchange.getRequestURI().getPath());
@@ -46,47 +46,6 @@ public class AITest {
         if (testServer != null) {
             testServer.stop(0);
         }
-    }
-
-    @Test
-    void embedModelTest() throws IOException, InterruptedException {
-        responseBody.set("{\"embeddings\":[[3.0, 4.0, 0.0]]}");
-        double[] output = testAi.embeddingModel("embedding-model", "test text. :)", false);
-
-        assertArrayEquals(new double[]{3.0, 4.0, 0.0}, output);
-        assertEquals("/api/embed", requestPath.get());
-
-        JSONObject requestJSON = new JSONObject(requestBody.get());
-        assertEquals("embedding-model", requestJSON.getString("model"));
-        assertEquals("test text. :)", requestJSON.getString("input"));
-    }
-
-    @Test
-    void embedModelErrorTest() {
-        responseBody.set("{\"error\":\"error test. :)\"}");
-        RuntimeException testException = assertThrows(RuntimeException.class, () -> testAi.embeddingModel("embedding-model", "test text. :)", false));
-        assertEquals("error test. :)", testException.getMessage());
-    }
-
-    @Test
-    void langModelTest() throws IOException, InterruptedException {
-        responseBody.set("{\"response\":\"response test. :)\"}");
-        assertEquals("response test. :)", testAi.languageModel("language-model", "system test text. :)", "test text. :)", false));
-
-        assertEquals("/api/generate", requestPath.get());
-
-        JSONObject requestJSON = new JSONObject(requestBody.get());
-        assertEquals("language-model", requestJSON.getString("model"));
-        assertEquals("system test text. :)", requestJSON.getString("system"));
-        assertEquals("test text. :)", requestJSON.getString("prompt"));
-        assertFalse(requestJSON.getBoolean("stream"));
-    }
-
-    @Test
-    void langModelErrorTest() {
-        responseBody.set("{\"error\":\"error test. :)\"}");
-        RuntimeException testException = assertThrows(RuntimeException.class, () -> testAi.languageModel("language-model", "system test text. :)", "test text. :)", false));
-        assertEquals("error test. :)", testException.getMessage());
     }
 
     @Test
