@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class EmbeddingAITest {
     private HttpServer testServer;
-    private AI testEmbedAi;
+    private EmbeddingAI testEmbedAi;
     private AtomicReference<String> requestPath = new AtomicReference<>();
     private AtomicReference<String> requestBody = new AtomicReference<>();
     private AtomicReference<String> responseBody = new AtomicReference<>();
@@ -38,6 +38,7 @@ public class EmbeddingAITest {
         testServer.start();
 
         URI baseURI = URI.create("http://localhost:" + testServer.getAddress().getPort());
+        responseBody.set("{\"models\":[{\"name\":\"embedding-model\"}]}");
         testEmbedAi = new EmbeddingAI(HttpClient.newHttpClient(), baseURI, "embedding-model", AI.SupportedModelTypes.EMBEDDING);
     }
 
@@ -49,9 +50,9 @@ public class EmbeddingAITest {
     }
 
     @Test
-    void embedModelTest() throws IOException, InterruptedException {
+    void invokeModelTest() throws IOException, InterruptedException {
         responseBody.set("{\"embeddings\":[[3.0, 4.0, 0.0]]}");
-        double[] output = testAi.embeddingModel("embedding-model", "test text. :)", false);
+        double[] output = testEmbedAi.invokeModel("test text. :)");
 
         assertArrayEquals(new double[]{3.0, 4.0, 0.0}, output);
         assertEquals("/api/embed", requestPath.get());
@@ -62,27 +63,8 @@ public class EmbeddingAITest {
     }
 
     @Test
-    void embedModelErrorTest() {
+    void invokeModelErrorTest() {
         responseBody.set("{\"error\":\"error test. :)\"}");
-        RuntimeException testException = assertThrows(RuntimeException.class, () -> testAi.embeddingModel("embedding-model", "test text. :)", false));
-        assertEquals("error test. :)", testException.getMessage());
-    }
-
-    @Test
-    void checkModelTest() throws IOException, InterruptedException {
-        responseBody.set("{\"capabilities\":[\"embedding\"]}");
-        assertFalse(testAi.checkModel("embedding-model", AI.SupportedModelTypes.LANGUAGE)[1]);
-        assertTrue(testAi.checkModel("embedding-model", AI.SupportedModelTypes.EMBEDDING)[1]);
-
-        responseBody.set("{\"capabilities\":[\"completion\"]}");
-        assertTrue(testAi.checkModel("language-model", AI.SupportedModelTypes.LANGUAGE)[1]);
-        assertFalse(testAi.checkModel("language-model", AI.SupportedModelTypes.EMBEDDING)[1]);
-    }
-
-    @Test
-    void checkModelErrorTest() throws IOException, InterruptedException {
-        responseBody.set("{\"error\":\"test text. :)\"}");
-        assertFalse(testAi.checkModel("language-model", AI.SupportedModelTypes.LANGUAGE)[0]);
-        assertFalse(testAi.checkModel("embedding-model", AI.SupportedModelTypes.EMBEDDING)[0]);
+        assertThrows(RuntimeException.class, () -> testEmbedAi.invokeModel("test text. :)"));
     }
 }
