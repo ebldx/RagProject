@@ -12,35 +12,27 @@ public class Main {
         String embedModelName = "";
         String langModelName = "";
         String userPrompt = "";
-        boolean testing = false;
-        if (!testing) {
-                do {
-                    System.out.print("Enter filename of text file: ");
-                    fileName = scanner.nextLine();
-                } while (!(new File(fileName).exists()));
+        do {
+            System.out.print("Enter filename of text file: ");
+            fileName = scanner.nextLine();
+        } while (!(new File(fileName).exists()));
 
-                do {
-                    System.out.print("Enter name of embedding model: ");
-                    embedModelName = scanner.nextLine();
-                } while (!AI.checkModel(embedModelName, AI.SupportedModelTypes.EMBEDDING, HttpClient.newHttpClient(), URI.create("http://localhost:11434/"))[1]);
+        do {
+            System.out.print("Enter name of embedding model: ");
+            embedModelName = scanner.nextLine();
+        } while (!AI.checkModel(embedModelName, AI.SupportedModelTypes.EMBEDDING, HttpClient.newHttpClient(), URI.create("http://localhost:11434/"))[1]);
 
-                do {
-                    System.out.print("Enter name of language model: ");
-                    langModelName = scanner.nextLine();
-                } while (!AI.checkModel(langModelName, AI.SupportedModelTypes.LANGUAGE, HttpClient.newHttpClient(), URI.create("http://localhost:11434/"))[1]);
+        do {
+            System.out.print("Enter name of language model: ");
+            langModelName = scanner.nextLine();
+        } while (!AI.checkModel(langModelName, AI.SupportedModelTypes.LANGUAGE, HttpClient.newHttpClient(), URI.create("http://localhost:11434/"))[1]);
 
-                do {
-                    System.out.print("Enter user prompt: ");
-                    userPrompt = scanner.nextLine();
-                } while (userPrompt == "");
-                scanner.close();
-                System.out.println("");
-        } else {
-            fileName = "text.txt";
-            embedModelName = "qwen3-embedding:8b";
-            langModelName = "llama3.1:8b";
-            userPrompt = "Why do cats have whiskers?";
-        }
+        do {
+            System.out.print("Enter user prompt: ");
+            userPrompt = scanner.nextLine();
+        } while (userPrompt == "");
+        scanner.close();
+        System.out.println("");
 
         LanguageAI LLM = new LanguageAI(langModelName, AI.SupportedModelTypes.LANGUAGE);
         EmbeddingAI VSM = new EmbeddingAI(embedModelName, AI.SupportedModelTypes.EMBEDDING);
@@ -56,7 +48,7 @@ public class Main {
 
         Vector[] vectorData = new Vector[textFileContents.size()];
         for (int i = 0; i < textFileContents.size(); i++) {
-            System.out.printf("Embedding line %s of %s\n", i+1, textFileContents.size());
+            System.out.printf("Embedding line %s of %s\n", i + 1, textFileContents.size());
             vectorData[i] = new Vector(VSM.invokeModel(textFileContents.get(i)));
         }
         Vector userPromptVector = new Vector(VSM.invokeModel(userPrompt));
@@ -82,7 +74,7 @@ public class Main {
 
         // Add calculation to determine how much info from vector similarity to provide.
         String systemPrompt = String.format("You are a helpful assistant. Answer the users question using the rules reference information provided below.\nRules:\n- Treat the reference information as your primary source.\n - If the reference information is not enough to provide an answer, say so clearly.\n - If the information provided is conflicting or unclear, point that out.\n - Clearly distinguish general information from the reference information when providing an answer.\nReference information:\n%s\n%s\n%s", textFileContents.get(0), textFileContents.get(1), textFileContents.get(2));
-        System.out.println("\n\n\n\nReference info:\n\t" + textFileContents.get(0) + "\n\t" +  textFileContents.get(1) + "\n\t" + textFileContents.get(2) + "\n\nUser prompt:\n\t" + userPrompt);
+        System.out.println("\n\n\n\nReference info:\n\t" + textFileContents.get(0) + "\n\t" + textFileContents.get(1) + "\n\t" + textFileContents.get(2) + "\n\nUser prompt:\n\t" + userPrompt);
         System.out.println("\nRunning language model...");
         System.out.println(LLM.invokeModel(systemPrompt, userPrompt));
     }
